@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semester Tracker</title>
+</head>
+<body>
+    <div id="content">
+        <h2>Semester Tracker</h2>
+        <hr>
+        <table>
+            <tr><th>Wk</th><th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr>
+            <tr><td>1</td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td></tr>
+            <tr><td>2</td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td></tr>
+            <tr><td>3</td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td></tr>
+            <tr><td>4</td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td></tr>
+            <tr><td>5</td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td></tr>
+            <tr><td>6</td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td></tr>
+            <tr><td>7</td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td></tr>
+            <tr><td>8</td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td></tr>
+            <tr><td>9</td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td></tr>
+            <tr><td>10</td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td></tr>
+            <tr><td>11</td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td></tr>
+            <tr><td>12</td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td></tr>
+            <tr><td>13</td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td></tr>
+            <tr><td>14</td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td></tr>
+            <tr><td>15</td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td></tr>
+            <tr><td>16</td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td><td class="day"></td></tr>
+        </table>
+        <br><button onclick="reload();">Reload</button>
+    </div>
+    <script>
+        const days = document.getElementsByClassName("day");
+        var current_date;
+        var current_doy = 0;
+        var doy_offset = 244;   // doy of aug 26th
+        var days_in_months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        
+        function isYearLeapYear (date) {
+            d = date ?? new Date();
+            year = d.getFullYear();
+
+            if (year % 4 == 0) {            // Evenly divided by 4
+                if (year % 100 == 0) {      // Evenly divides by 100
+                    if (year % 400 == 0) {  // Evenly divides by 400
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        function getDayOfYear (date) {
+            d = date ?? new Date();
+            leap_year = isYearLeapYear(d);
+            if (leap_year) {
+                days_in_months[1] = 29;
+            }
+            
+            // Calculate current month
+            month = d.getMonth();
+
+            for (let i=0; i < month; i++) {
+                current_doy += days_in_months[i];
+            }
+
+            // Add previous days in month
+            current_doy += d.getDate();
+
+            return current_doy;
+        }
+
+        function fillInPreviousDays (doy) {
+            prev_day_max = (getDayOfYear() - doy_offset) - 1;
+            console.log(prev_day_max);
+
+            days_arr = Array.from(days);
+            days_arr.forEach(function (valu, indx, arr) {
+                console.log(indx);
+                console.log(valu);
+                if (indx < prev_day_max) {
+                    try {           // If first day, no green
+                        valu.style.backgroundColor = "green";
+                    } catch {};
+                } else {
+                    if (indx == prev_day_max) {
+                        try {
+                            valu.style.backgroundColor = "yellow";
+                        } catch {};
+                    }
+                }
+            });
+
+        }
+
+        function main () {
+            fillInPreviousDays();
+        }
+
+        function reload () {
+            main();
+        }
+
+        main();
+    </script>
+    <style>
+        .day {
+            background-color: gray;
+        }
+        
+        td {
+            width: 25px;
+            height: 25px;
+            border-radius: 3px;
+            text-align: center;
+        }
+
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        #content {
+            width: 80%;
+            margin: auto;
+        }
+    </style>
+</body>
+</html>
